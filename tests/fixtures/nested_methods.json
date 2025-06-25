@@ -1,0 +1,50 @@
+{
+  "methods": [
+    {
+      "name": "@where",
+      "parameters": [
+        "id",
+        "=",
+        1
+      ]
+    },
+    {
+      "name": "@with",
+      "parameters": [
+        {
+          "posts": {
+            "methods": [
+              {
+                "name": "@where",
+                "parameters": [
+                  "status",
+                  "=",
+                  "published"
+                ]
+              },
+              {
+                "name": "@with",
+                "parameters": [
+                  {
+                    "comments": {
+                      "methods": [
+                        {
+                          "name": "@where",
+                          "parameters": [
+                            "status",
+                            "=",
+                            "approved"
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
