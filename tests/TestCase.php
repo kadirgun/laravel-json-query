@@ -2,13 +2,13 @@
 
 namespace KadirGun\JsonQuery\Tests;
 
-use Orchestra\Testbench\TestCase as Orchestra;
-use function Orchestra\Testbench\workbench_path;
-use KadirGun\JsonQuery\JsonQueryServiceProvider;
-
-use Orchestra\Testbench\Attributes\WithMigration;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use KadirGun\JsonQuery\JsonQueryServiceProvider;
+use Orchestra\Testbench\Attributes\WithMigration;
+use Orchestra\Testbench\TestCase as Orchestra;
+
+use function Orchestra\Testbench\workbench_path;
 
 #[WithMigration]
 class TestCase extends Orchestra
@@ -20,7 +20,7 @@ class TestCase extends Orchestra
         parent::setUp();
 
         Factory::guessFactoryNamesUsing(
-            fn(string $modelName) => 'KadirGun\\JsonQuery\\Database\\Factories\\' . class_basename($modelName) . 'Factory'
+            fn (string $modelName) => 'KadirGun\\JsonQuery\\Database\\Factories\\'.class_basename($modelName).'Factory'
         );
     }
 

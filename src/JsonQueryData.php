@@ -3,7 +3,6 @@
 namespace KadirGun\JsonQuery;
 
 use Illuminate\Http\Request;
-use Illuminate\Database\Eloquent\Builder;
 
 class JsonQueryData extends Request
 {
@@ -23,6 +22,6 @@ class JsonQueryData extends Request
 
     public static function fromRequest(Request $request): self
     {
-        return static::createFrom($request, new static());
+        return static::createFrom($request, new static);
     }
 }

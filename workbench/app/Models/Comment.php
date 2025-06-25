@@ -17,7 +17,7 @@ class Comment extends Model
         'content',
         'content',
         'status',
-        'approved_at'
+        'approved_at',
     ];
 
     protected function casts(): array

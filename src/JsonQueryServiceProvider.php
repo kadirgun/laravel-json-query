@@ -2,9 +2,9 @@
 
 namespace KadirGun\JsonQuery;
 
+use KadirGun\JsonQuery\Commands\JsonQueryCommand;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
-use KadirGun\JsonQuery\Commands\JsonQueryCommand;
 
 class JsonQueryServiceProvider extends PackageServiceProvider
 {

@@ -1,20 +1,19 @@
 <?php
 
-use Illuminate\Http\Request;
-use Workbench\App\Models\User;
-use KadirGun\JsonQuery\JsonQuery;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Contracts\Database\Eloquent\Builder;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use KadirGun\JsonQuery\JsonQuery;
+use Workbench\App\Models\User;
 
 test('build where clause', function () {
     $request = new Request([
         'methods' => [
             [
                 'name' => '@where',
-                'parameters' => ['id', '=', 1]
-            ]
-        ]
+                'parameters' => ['id', '=', 1],
+            ],
+        ],
     ]);
 
     $query = JsonQuery::for(User::class, $request)->build();
@@ -28,13 +27,13 @@ test('build where clause with multiple parameters', function () {
         'methods' => [
             [
                 'name' => '@where',
-                'parameters' => ['id', '=', 1]
+                'parameters' => ['id', '=', 1],
             ],
             [
                 'name' => '@where',
-                'parameters' => ['email', '=', 'test@test.com']
-            ]
-        ]
+                'parameters' => ['email', '=', 'test@test.com'],
+            ],
+        ],
     ]);
 
     $query = JsonQuery::for(User::class, $request)->build();
@@ -48,19 +47,19 @@ test('build with non-existing method', function () {
         'methods' => [
             [
                 'name' => 'nonExistingMethod',
-                'parameters' => []
-            ]
-        ]
+                'parameters' => [],
+            ],
+        ],
     ]);
 
     $builder = JsonQuery::for(User::class, $request);
 
-    expect(fn() => $builder->build())->toThrow(\BadMethodCallException::class, 'Method nonExistingMethod does not exist on the subject.');
+    expect(fn () => $builder->build())->toThrow(\BadMethodCallException::class, 'Method nonExistingMethod does not exist on the subject.');
 });
 
 test('build with empty methods', function () {
     $request = new Request([
-        'methods' => []
+        'methods' => [],
     ]);
 
     $query = JsonQuery::for(User::class, $request)->build();
@@ -70,7 +69,7 @@ test('build with empty methods', function () {
 });
 
 test('build with relation', function () {
-    $requestFile = file_get_contents(__DIR__ . '/fixtures/with_relation.json');
+    $requestFile = file_get_contents(__DIR__.'/fixtures/with_relation.json');
     $requestData = json_decode($requestFile, true);
     $request = new Request($requestData);
 
@@ -98,14 +97,14 @@ test('build with relation', function () {
 });
 
 test('build with nested methods', function () {
-    $requestFile = file_get_contents(__DIR__ . '/fixtures/nested_methods.json');
+    $requestFile = file_get_contents(__DIR__.'/fixtures/nested_methods.json');
     $requestData = json_decode($requestFile, true);
     $request = new Request($requestData);
 
     $user = User::factory()->create(['id' => 1]);
     $user->posts()->create([
         'title' => 'Test Post',
-        'status' => 'published'
+        'status' => 'published',
     ]);
 
     DB::enableQueryLog();
@@ -122,9 +121,9 @@ test('build with nested methods', function () {
                 $query->with([
                     'comments' => function (Builder $query) {
                         $query->where('status', '=', 'approved');
-                    }
+                    },
                 ]);
-            }
+            },
         ])->get();
     $expectedQueryLogs = DB::getQueryLog();
     DB::flushQueryLog();

@@ -3,14 +3,15 @@
 namespace KadirGun\JsonQuery;
 
 use ArrayAccess;
-use Illuminate\Http\Request;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Traits\ForwardsCalls;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
+use Illuminate\Http\Request;
+use Illuminate\Support\Traits\ForwardsCalls;
 
 /**
  * @template TModel of Model
+ *
  * @mixin Builder<TModel>
  */
 class JsonQuery implements ArrayAccess
@@ -35,7 +36,7 @@ class JsonQuery implements ArrayAccess
 
                     return $subject;
                 };
-            } else if (is_array($value)) {
+            } elseif (is_array($value)) {
                 $parameters[$key] = self::parseParameters($value);
             }
         }
@@ -71,7 +72,7 @@ class JsonQuery implements ArrayAccess
     }
 
     /**
-     * @param Builder<TModel>|Relation|class-string<TModel> $subject
+     * @param  Builder<TModel>|Relation|class-string<TModel>  $subject
      * @return static<TModel>
      */
     public static function for(
