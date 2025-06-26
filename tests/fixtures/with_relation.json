@@ -1,7 +1,7 @@
 {
   "methods": [
     {
-      "name": "@where",
+      "name": "where",
       "parameters": [
         "id",
         "=",
@@ -15,7 +15,7 @@
           "posts": {
             "methods": [
               {
-                "name": "@where",
+                "name": "where",
                 "parameters": [
                   "status",
                   "=",

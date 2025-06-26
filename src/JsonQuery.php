@@ -8,6 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Traits\ForwardsCalls;
+use KadirGun\JsonQuery\Exceptions\MethodCountExceededException;
+use KadirGun\JsonQuery\Exceptions\MethodDepthExceededException;
+use KadirGun\JsonQuery\Exceptions\MethodNotAllowedException;
 
 /**
  * @template TModel of Model
@@ -18,6 +21,8 @@ class JsonQuery implements ArrayAccess
 {
     use ForwardsCalls;
 
+    private int $depth = 1;
+
     public function __construct(
         protected Builder|Relation $subject,
         protected ?Request $request = null
@@ -27,48 +32,70 @@ class JsonQuery implements ArrayAccess
             : app(JsonQueryData::class);
     }
 
-    public static function parseParameters(array $parameters): array
+    private function parseParameters(array $parameters): array
     {
         foreach ($parameters as $key => $value) {
             if (isset($value['methods']) && is_array($value['methods'])) {
+                $this->depth++;
+
+                if ($this->depth > config('json-query.limits.max_depth', 10)) {
+                    throw new MethodDepthExceededException($this->depth);
+                }
+
                 $parameters[$key] = function ($subject) use ($value) {
-                    self::callMethods($value['methods'], $subject);
+                    $this->callMethods($value['methods'], $subject);
 
                     return $subject;
                 };
             } elseif (is_array($value)) {
-                $parameters[$key] = self::parseParameters($value);
+                $parameters[$key] = $this->parseParameters($value);
             }
         }
 
         return $parameters;
     }
 
-    public static function callMethods(array $methods, mixed $subject)
+    private function callMethods(array $methods, mixed $subject): mixed
     {
-        foreach ($methods as $method) {
-            self::callMethod($method, $subject);
+        $limit = config('json-query.limits.method_count', 20);
+
+        if (count($methods) > $limit) {
+            throw new MethodCountExceededException(count($methods));
         }
+
+        $result = $subject;
+
+        foreach ($methods as $method) {
+            $result = $this->callMethod($method, $subject);
+        }
+
+        return $result;
     }
 
-    public static function callMethod(array $method, mixed $subject)
+    private function callMethod(array $method, mixed $subject): mixed
     {
-        $name = str_replace('@', '', $method['name'] ?? '');
-        $parameters = self::parseParameters($method['parameters'] ?? []);
+        $name = $method['name'];
 
-        dump("Calling method: {$name} with parameters:", $parameters);
+        $allowedAllowedMethods = config('json-query.allow_all_methods', false);
+        $allowedMethods = config('json-query.allowed_methods', []);
 
-        $subject->{$name}(...$parameters);
+        if (! $allowedAllowedMethods && ! in_array($name, $allowedMethods)) {
+            throw new MethodNotAllowedException("Method {$name} is not allowed.");
+        }
+
+        $parameters = $this->parseParameters($method['parameters'] ?? []);
+
+        return $subject->{$name}(...$parameters);
     }
 
-    public function build(): Builder|Relation
+    public function build(): mixed
     {
-        self::callMethods(
+        $result = $this->callMethods(
             $this->request->methods(),
             $this->subject
         );
 
-        return $this->subject;
+        return $result;
     }
 
     /**
