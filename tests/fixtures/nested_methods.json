@@ -1,7 +1,7 @@
 {
   "methods": [
     {
-      "name": "@where",
+      "name": "where",
       "parameters": [
         "id",
         "=",
@@ -9,13 +9,13 @@
       ]
     },
     {
-      "name": "@with",
+      "name": "with",
       "parameters": [
         {
           "posts": {
             "methods": [
               {
-                "name": "@where",
+                "name": "where",
                 "parameters": [
                   "status",
                   "=",
@@ -23,13 +23,13 @@
                 ]
               },
               {
-                "name": "@with",
+                "name": "with",
                 "parameters": [
                   {
                     "comments": {
                       "methods": [
                         {
-                          "name": "@where",
+                          "name": "where",
                           "parameters": [
                             "status",
                             "=",

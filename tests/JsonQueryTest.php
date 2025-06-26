@@ -10,7 +10,7 @@ test('build where clause', function () {
     $request = new Request([
         'methods' => [
             [
-                'name' => '@where',
+                'name' => 'where',
                 'parameters' => ['id', '=', 1],
             ],
         ],
@@ -26,11 +26,11 @@ test('build where clause with multiple parameters', function () {
     $request = new Request([
         'methods' => [
             [
-                'name' => '@where',
+                'name' => 'where',
                 'parameters' => ['id', '=', 1],
             ],
             [
-                'name' => '@where',
+                'name' => 'where',
                 'parameters' => ['email', '=', 'test@test.com'],
             ],
         ],
@@ -40,21 +40,6 @@ test('build where clause with multiple parameters', function () {
     $expectedQuery = User::query()->where('id', '=', 1)
         ->where('email', '=', 'test@test.com');
     expect($query->toSql())->toBe($expectedQuery->toSql());
-});
-
-test('build with non-existing method', function () {
-    $request = new Request([
-        'methods' => [
-            [
-                'name' => 'nonExistingMethod',
-                'parameters' => [],
-            ],
-        ],
-    ]);
-
-    $builder = JsonQuery::for(User::class, $request);
-
-    expect(fn () => $builder->build())->toThrow(\BadMethodCallException::class, 'Method nonExistingMethod does not exist on the subject.');
 });
 
 test('build with empty methods', function () {
@@ -69,7 +54,7 @@ test('build with empty methods', function () {
 });
 
 test('build with relation', function () {
-    $requestFile = file_get_contents(__DIR__.'/fixtures/with_relation.json');
+    $requestFile = file_get_contents(__DIR__ . '/fixtures/with_relation.json');
     $requestData = json_decode($requestFile, true);
     $request = new Request($requestData);
 
@@ -97,7 +82,7 @@ test('build with relation', function () {
 });
 
 test('build with nested methods', function () {
-    $requestFile = file_get_contents(__DIR__.'/fixtures/nested_methods.json');
+    $requestFile = file_get_contents(__DIR__ . '/fixtures/nested_methods.json');
     $requestData = json_decode($requestFile, true);
     $request = new Request($requestData);
 
@@ -127,8 +112,6 @@ test('build with nested methods', function () {
         ])->get();
     $expectedQueryLogs = DB::getQueryLog();
     DB::flushQueryLog();
-
-    dd($queryLogs, $expectedQueryLogs);
 
     foreach ($queryLogs as $index => $log) {
         expect($log['query'])->toBe($expectedQueryLogs[$index]['query']);

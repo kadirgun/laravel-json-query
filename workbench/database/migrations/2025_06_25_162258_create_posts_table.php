@@ -18,6 +18,7 @@ return new class extends Migration
             $table->text('content')->nullable();
             $table->string('status')->default('draft');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
