@@ -23,6 +23,14 @@ class JsonQuery implements ArrayAccess
 
     private int $depth = 1;
 
+    private array $allowedMethods = [];
+
+    private bool $allowAllMethods = false;
+
+    private int $methodCountLimit = 20;
+
+    private int $maxDepthLimit = 10;
+
     public function __construct(
         protected Builder|Relation $subject,
         protected JsonQueryData|Request|null $request = null
@@ -32,6 +40,11 @@ class JsonQuery implements ArrayAccess
                 ? JsonQueryData::fromRequest($request)
                 : app(JsonQueryData::class);
         }
+
+        $this->allowedMethods = config('json-query.allowed_methods', []);
+        $this->allowAllMethods = config('json-query.allow_all_methods', false);
+        $this->methodCountLimit = config('json-query.limits.method_count', 20);
+        $this->maxDepthLimit = config('json-query.limits.max_depth', 10);
     }
 
     /**
@@ -58,7 +71,7 @@ class JsonQuery implements ArrayAccess
             if (isset($value['methods']) && is_array($value['methods'])) {
                 $this->depth++;
 
-                if ($this->depth > config('json-query.limits.max_depth', 10)) {
+                if ($this->depth > $this->maxDepthLimit) {
                     throw new MethodDepthExceededException($this->depth);
                 }
 
@@ -77,9 +90,7 @@ class JsonQuery implements ArrayAccess
 
     private function callMethods(array $methods, mixed $subject): mixed
     {
-        $limit = config('json-query.limits.method_count', 20);
-
-        if (count($methods) > $limit) {
+        if (count($methods) > $this->methodCountLimit) {
             throw new MethodCountExceededException(count($methods));
         }
 
@@ -96,10 +107,7 @@ class JsonQuery implements ArrayAccess
     {
         $name = $method['name'];
 
-        $allowedAllowedMethods = config('json-query.allow_all_methods', false);
-        $allowedMethods = config('json-query.allowed_methods', []);
-
-        if (! $allowedAllowedMethods && ! in_array($name, $allowedMethods)) {
+        if (! $this->allowAllMethods && ! in_array($name, $this->allowedMethods)) {
             throw new MethodNotAllowedException("Method {$name} is not allowed.");
         }
 
@@ -120,6 +128,38 @@ class JsonQuery implements ArrayAccess
         );
 
         return $result;
+    }
+
+    public function allowMethods($methods): self
+    {
+        if (! is_array($methods)) {
+            $methods = func_get_args();
+        }
+
+        $this->allowedMethods = array_merge($this->allowedMethods, $methods);
+
+        return $this;
+    }
+
+    public function allowAllMethods(bool $allow = true): self
+    {
+        $this->allowAllMethods = $allow;
+
+        return $this;
+    }
+
+    public function setMethodCountLimit(int $limit): self
+    {
+        $this->methodCountLimit = $limit;
+
+        return $this;
+    }
+
+    public function setMaxDepthLimit(int $limit): self
+    {
+        $this->maxDepthLimit = $limit;
+
+        return $this;
     }
 
     public function getSubject(): Builder|Relation

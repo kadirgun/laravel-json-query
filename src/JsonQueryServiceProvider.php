@@ -23,8 +23,12 @@ class JsonQueryServiceProvider extends PackageServiceProvider
             ->hasCommand(JsonQueryCommand::class);
     }
 
-    public function bootingPackage()
+    public function registerRoutes(): void
     {
+        if (! config('json-query.route.enabled', true)) {
+            return;
+        }
+
         Route::middleware(config('json-query.route.middleware', ['api']))
             ->prefix(config('json-query.route.path', 'json-query'))
             ->name('json-query.')
@@ -33,6 +37,11 @@ class JsonQueryServiceProvider extends PackageServiceProvider
                     ->name('query')
                     ->where('model', '.*');
             });
+    }
+
+    public function bootingPackage()
+    {
+        $this->registerRoutes();
     }
 
     public function registeringPackage(): void
