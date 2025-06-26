@@ -36,7 +36,6 @@ class JsonQuery implements ArrayAccess
 
     /**
      * @param  Builder<TModel>|Relation|class-string<TModel>  $subject
-     * @param  JsonQueryData|Request|null  $request
      * @return self<TModel>
      */
     public static function for(
