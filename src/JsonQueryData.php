@@ -22,6 +22,6 @@ class JsonQueryData extends Request
 
     public static function fromRequest(Request $request): self
     {
-        return static::createFrom($request, new static);
+        return static::createFrom($request, new self);
     }
 }

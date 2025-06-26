@@ -25,11 +25,32 @@ class JsonQuery implements ArrayAccess
 
     public function __construct(
         protected Builder|Relation $subject,
-        protected ?Request $request = null
+        protected JsonQueryData|Request|null $request = null
     ) {
-        $this->request = $request
-            ? JsonQueryData::fromRequest($request)
-            : app(JsonQueryData::class);
+        if (! $this->request instanceof JsonQueryData) {
+            $this->request = $request
+                ? JsonQueryData::fromRequest($request)
+                : app(JsonQueryData::class);
+        }
+    }
+
+    /**
+     * @param  Builder<TModel>|Relation|class-string<TModel>  $subject
+     * @param  JsonQueryData|Request|null  $request
+     * @return self<TModel>
+     */
+    public static function for(
+        Builder|Relation|string $subject,
+        JsonQueryData|Request|null $request = null
+    ): self {
+        if (is_subclass_of($subject, Model::class)) {
+            $subject = $subject::query();
+        }
+
+        /** @var self<TModel> $instance */
+        $instance = new self($subject, $request);
+
+        return $instance;
     }
 
     private function parseParameters(array $parameters): array
@@ -90,30 +111,16 @@ class JsonQuery implements ArrayAccess
 
     public function build(): mixed
     {
+        if (! $this->request instanceof JsonQueryData) {
+            throw new \RuntimeException('Request must be an instance of JsonQueryData.');
+        }
+
         $result = $this->callMethods(
             $this->request->methods(),
             $this->subject
         );
 
         return $result;
-    }
-
-    /**
-     * @param  Builder<TModel>|Relation|class-string<TModel>  $subject
-     * @return static<TModel>
-     */
-    public static function for(
-        Builder|Relation|string $subject,
-        ?Request $request = null
-    ): static {
-        if (is_subclass_of($subject, Model::class)) {
-            $subject = $subject::query();
-        }
-
-        /** @var static<TModel> $instance */
-        $instance = new static($subject, $request);
-
-        return $instance;
     }
 
     public function getSubject(): Builder|Relation
