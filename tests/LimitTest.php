@@ -18,11 +18,11 @@ test('method count limit', function () {
 
     config(['json-query.limits.method_count' => 20]);
     $builder = JsonQuery::for(User::query(), $request);
-    expect(fn() => $builder->build())->toThrow(MethodCountExceededException::class);
+    expect(fn () => $builder->build())->toThrow(MethodCountExceededException::class);
 
     config(['json-query.limits.method_count' => 21]);
     $builder = JsonQuery::for(User::query(), $request);
-    expect(fn() => $builder->build())->not->toThrow(MethodCountExceededException::class);
+    expect(fn () => $builder->build())->not->toThrow(MethodCountExceededException::class);
 });
 
 test('depth limit', function () {
@@ -66,9 +66,9 @@ test('depth limit', function () {
 
     config(['json-query.limits.max_depth' => 3]);
     $builder = JsonQuery::for(User::query(), $request);
-    expect(fn() => $builder->build())->toThrow(MethodDepthExceededException::class);
+    expect(fn () => $builder->build())->toThrow(MethodDepthExceededException::class);
 
     config(['json-query.limits.max_depth' => 4]);
     $builder = JsonQuery::for(User::query(), $request);
-    expect(fn() => $builder->build())->not->toThrow(MethodDepthExceededException::class);
+    expect(fn () => $builder->build())->not->toThrow(MethodDepthExceededException::class);
 });
