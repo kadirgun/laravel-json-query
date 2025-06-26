@@ -52,7 +52,7 @@ test('authorize json-query', function () {
 
     $user = User::factory()->create();
 
-    Gate::define('json-query', function ($user, $model) {
+    Gate::define('json-query', function ($user, $model, $request) {
         return true;
     });
 

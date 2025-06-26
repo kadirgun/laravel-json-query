@@ -20,7 +20,7 @@ class JsonQueryController
         }
 
         if (Gate::has('json-query')) {
-            Gate::authorize('json-query', $model);
+            Gate::authorize('json-query', [$model, $request]);
         }
 
         $builder = app(JsonQuery::class, [
