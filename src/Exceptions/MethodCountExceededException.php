@@ -7,7 +7,6 @@ class MethodCountExceededException extends \Exception
     /**
      * Create a new exception instance.
      *
-     * @param int $count
      * @return void
      */
     public function __construct(int $count)

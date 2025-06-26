@@ -54,7 +54,7 @@ test('build with empty methods', function () {
 });
 
 test('build with relation', function () {
-    $requestFile = file_get_contents(__DIR__ . '/fixtures/with_relation.json');
+    $requestFile = file_get_contents(__DIR__.'/fixtures/with_relation.json');
     $requestData = json_decode($requestFile, true);
     $request = new Request($requestData);
 
@@ -82,7 +82,7 @@ test('build with relation', function () {
 });
 
 test('build with nested methods', function () {
-    $requestFile = file_get_contents(__DIR__ . '/fixtures/nested_methods.json');
+    $requestFile = file_get_contents(__DIR__.'/fixtures/nested_methods.json');
     $requestData = json_decode($requestFile, true);
     $request = new Request($requestData);
 

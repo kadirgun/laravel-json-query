@@ -1,9 +1,9 @@
 <?php
 
 use Illuminate\Http\Request;
-use Workbench\App\Models\User;
-use KadirGun\JsonQuery\JsonQuery;
 use KadirGun\JsonQuery\Exceptions\MethodNotAllowedException;
+use KadirGun\JsonQuery\JsonQuery;
+use Workbench\App\Models\User;
 
 test('allowed methods', function () {
     $user = User::factory()->create();
@@ -23,7 +23,7 @@ test('allowed methods', function () {
 
     config(['json-query.allowed_methods' => ['where']]);
     $builder = JsonQuery::for(User::query(), $request);
-    expect(fn() => $builder->build())->toThrow(MethodNotAllowedException::class);
+    expect(fn () => $builder->build())->toThrow(MethodNotAllowedException::class);
 
     config(['json-query.allow_all_methods' => true]);
     config(['json-query.allowed_methods' => []]);

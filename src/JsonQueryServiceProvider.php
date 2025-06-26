@@ -3,10 +3,10 @@
 namespace KadirGun\JsonQuery;
 
 use Illuminate\Support\Facades\Route;
-use Spatie\LaravelPackageTools\Package;
 use KadirGun\JsonQuery\Commands\JsonQueryCommand;
-use Spatie\LaravelPackageTools\PackageServiceProvider;
 use KadirGun\JsonQuery\Http\Controllers\JsonQueryController;
+use Spatie\LaravelPackageTools\Package;
+use Spatie\LaravelPackageTools\PackageServiceProvider;
 
 class JsonQueryServiceProvider extends PackageServiceProvider
 {

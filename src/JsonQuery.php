@@ -3,14 +3,14 @@
 namespace KadirGun\JsonQuery;
 
 use ArrayAccess;
-use Illuminate\Http\Request;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Traits\ForwardsCalls;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
-use KadirGun\JsonQuery\Exceptions\MethodNotAllowedException;
+use Illuminate\Http\Request;
+use Illuminate\Support\Traits\ForwardsCalls;
 use KadirGun\JsonQuery\Exceptions\MethodCountExceededException;
 use KadirGun\JsonQuery\Exceptions\MethodDepthExceededException;
+use KadirGun\JsonQuery\Exceptions\MethodNotAllowedException;
 
 /**
  * @template TModel of Model
@@ -79,7 +79,7 @@ class JsonQuery implements ArrayAccess
         $allowedAllowedMethods = config('json-query.allow_all_methods', false);
         $allowedMethods = config('json-query.allowed_methods', []);
 
-        if (!$allowedAllowedMethods && !in_array($name, $allowedMethods)) {
+        if (! $allowedAllowedMethods && ! in_array($name, $allowedMethods)) {
             throw new MethodNotAllowedException("Method {$name} is not allowed.");
         }
 

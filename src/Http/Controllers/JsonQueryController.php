@@ -15,7 +15,7 @@ class JsonQueryController
         /** @var Model|null $model */
         $model = config("json-query.route.models.{$model}", null);
 
-        if (!$model) {
+        if (! $model) {
             abort(404, "Model {$model} not found.");
         }
 

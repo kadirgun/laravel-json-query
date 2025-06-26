@@ -8,7 +8,7 @@ return [
         'middleware' => ['api'],
         'models' => [
             // 'users' => \App\Models\User::class,
-        ]
+        ],
     ],
     'limits' => [
         // Maximum number of method calls allowed in a single query
