@@ -1,13 +1,13 @@
 <?php
 
-use Illuminate\Http\Request;
-use Workbench\App\Models\User;
-use KadirGun\JsonQuery\JsonQuery;
-
-use function Pest\Laravel\actingAs;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Database\Eloquent\Builder;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
+use KadirGun\JsonQuery\JsonQuery;
+use Workbench\App\Models\User;
+
+use function Pest\Laravel\actingAs;
 
 test('authorize json-query-method', function () {
     $user = User::factory()->create();
@@ -29,7 +29,6 @@ test('authorize json-query-method', function () {
 
     $request = new Request($query);
 
-
     Gate::define('json-query-method', function ($user, $method, $subject) {
         expect($method)->toBeArray();
         expect($method['name'])->toBe('where');
@@ -40,5 +39,5 @@ test('authorize json-query-method', function () {
     });
 
     $query = JsonQuery::for(User::query(), $request);
-    expect(fn() => $query->build()->get())->toThrow(AuthorizationException::class);
+    expect(fn () => $query->build()->get())->toThrow(AuthorizationException::class);
 });

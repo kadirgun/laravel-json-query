@@ -1,11 +1,11 @@
 <?php
 
-use Workbench\App\Models\User;
-use function Pest\Laravel\actingAs;
-
-use function Pest\Laravel\postJson;
 use Illuminate\Support\Facades\Gate;
 use KadirGun\JsonQuery\JsonQueryData;
+use Workbench\App\Models\User;
+
+use function Pest\Laravel\actingAs;
+use function Pest\Laravel\postJson;
 
 test('model is registered', function () {
     config(['json-query.route.models.users' => User::class]);
@@ -35,7 +35,7 @@ test('model is registered', function () {
         'data' => [
             'id' => $user->id,
             'name' => $user->name,
-        ]
+        ],
     ]);
 });
 
@@ -58,6 +58,7 @@ test('authorize json-query', function () {
     Gate::define('json-query', function ($user, $model, $request) {
         expect($model)->toBe(User::class);
         expect($request)->toBeInstanceOf(JsonQueryData::class);
+
         return true;
     });
 
