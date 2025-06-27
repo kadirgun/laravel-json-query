@@ -1,16 +1,13 @@
 <?php
 
 // config for KadirGun/JsonQuery
-
-use Workbench\App\Models\User;
-
 return [
     'route' => [
         'enabled' => true,
         'path' => 'json-query',
         'middleware' => ['api'],
         'models' => [
-            'users' => User::class,
+            // 'users' => \App\Models\User::class,
         ],
     ],
     'limits' => [
