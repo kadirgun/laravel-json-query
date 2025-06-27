@@ -16,7 +16,7 @@ return [
         // Maximum depth of nested queries
         'max_depth' => 10,
     ],
-    'allowed_methods' => [
+    'allow_methods' => [
         'first',
         'get',
         'paginate',
@@ -34,4 +34,8 @@ return [
         // Add more methods as needed
     ],
     'allow_all_methods' => false,
+    'authorization' => [
+        'enabled' => true,
+        'ability' => 'json-query',
+    ],
 ];

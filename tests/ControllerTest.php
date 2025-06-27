@@ -59,7 +59,7 @@ test('authorize json-query', function () {
         expect($model)->toBe(User::class);
         expect($request)->toBeInstanceOf(JsonQueryData::class);
 
-        return true;
+        return false;
     });
 
     $response = actingAs($user)
@@ -80,5 +80,5 @@ test('authorize json-query', function () {
             ]
         );
 
-    $response->assertOk();
+    $response->assertForbidden();
 });

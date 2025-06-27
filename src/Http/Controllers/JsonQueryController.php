@@ -19,8 +19,9 @@ class JsonQueryController
             abort(404, "Model {$model} not found.");
         }
 
-        if (Gate::has('json-query')) {
-            Gate::authorize('json-query', [$model, $request]);
+        $ability = config('json-query.authorization.ability', 'json-query');
+        if (Gate::has($ability)) {
+            Gate::authorize($ability, [$model, $request]);
         }
 
         $builder = app(JsonQuery::class, [

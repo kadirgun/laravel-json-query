@@ -3,6 +3,7 @@
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use KadirGun\JsonQuery\Exceptions\MethodNotAllowedException;
 use KadirGun\JsonQuery\JsonQuery;
 use Workbench\App\Models\User;
 
@@ -116,4 +117,26 @@ test('build with nested methods', function () {
     foreach ($queryLogs as $index => $log) {
         expect($log['query'])->toBe($expectedQueryLogs[$index]['query']);
     }
+});
+
+test('allow methods', function () {
+    config(['json-query.allow_methods' => []]);
+
+    $request = new Request([
+        'methods' => [
+            [
+                'name' => 'where',
+                'parameters' => ['id', '=', 1],
+            ],
+        ],
+    ]);
+
+    $builder = JsonQuery::for(User::class, $request);
+    expect(fn () => $builder->build()->get())->toThrow(MethodNotAllowedException::class);
+
+    $builder = JsonQuery::for(User::class, $request)->allowMethods(['where']);
+    expect(fn () => $builder->build()->get())->not()->toThrow(MethodNotAllowedException::class);
+
+    $builder = JsonQuery::for(User::class, $request)->allowAllMethods();
+    expect(fn () => $builder->build()->get())->not()->toThrow(MethodNotAllowedException::class);
 });

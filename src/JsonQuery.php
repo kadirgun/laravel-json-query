@@ -4,10 +4,10 @@ namespace KadirGun\JsonQuery;
 
 use ArrayAccess;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Traits\ForwardsCalls;
 use KadirGun\JsonQuery\Exceptions\MethodCountExceededException;
 use KadirGun\JsonQuery\Exceptions\MethodDepthExceededException;
@@ -32,6 +32,8 @@ class JsonQuery implements ArrayAccess
 
     private int $maxDepthLimit = 10;
 
+    private bool $shouldBeAuthorized = true;
+
     public function __construct(
         protected Builder|Relation $subject,
         protected JsonQueryData|Request|null $request = null
@@ -42,10 +44,11 @@ class JsonQuery implements ArrayAccess
                 : app(JsonQueryData::class);
         }
 
-        $this->allowedMethods = config('json-query.allowed_methods', []);
+        $this->allowedMethods = config('json-query.allow_methods', []);
         $this->allowAllMethods = config('json-query.allow_all_methods', false);
         $this->methodCountLimit = config('json-query.limits.method_count', 20);
         $this->maxDepthLimit = config('json-query.limits.max_depth', 10);
+        $this->shouldBeAuthorized = config('json-query.authorization.enabled', true);
     }
 
     /**
@@ -114,17 +117,19 @@ class JsonQuery implements ArrayAccess
 
         $parameters = $this->parseParameters($method['parameters'] ?? []);
 
-        if (Gate::has('json-query-method')) {
-            Gate::authorize('json-query-method', [$method, $subject]);
+        $method = new JsonQueryMethod($name, $parameters, $subject);
+
+        if ($this->shouldBeAuthorized) {
+            $method->authorize();
         }
 
-        return $subject->{$name}(...$parameters);
+        return $method->call();
     }
 
     /**
      * Build the query based on the provided request data.
      *
-     * @return Builder|Relation|Model|mixed
+     * @return Builder|Relation|TModel|Collection<int,TModel>|mixed
      */
     public function build(): mixed
     {

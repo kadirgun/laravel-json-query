@@ -17,16 +17,16 @@ test('allowed methods', function () {
 
     config(['json-query.allow_all_methods' => false]);
 
-    config(['json-query.allowed_methods' => ['where', 'first']]);
+    config(['json-query.allow_methods' => ['where', 'first']]);
     $builder = JsonQuery::for(User::query(), $request);
     expect($builder->build())->toBeInstanceOf(User::class);
 
-    config(['json-query.allowed_methods' => ['where']]);
+    config(['json-query.allow_methods' => ['where']]);
     $builder = JsonQuery::for(User::query(), $request);
     expect(fn () => $builder->build())->toThrow(MethodNotAllowedException::class);
 
     config(['json-query.allow_all_methods' => true]);
-    config(['json-query.allowed_methods' => []]);
+    config(['json-query.allow_methods' => []]);
     $builder = JsonQuery::for(User::query(), $request);
     expect($builder->build())->toBeInstanceOf(User::class);
 });
