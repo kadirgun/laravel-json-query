@@ -34,6 +34,8 @@ class JsonQueryController
             $result = $result->get();
         }
 
-        return response()->json($result);
+        return response()->json([
+            'data' => $result,
+        ]);
     }
 }

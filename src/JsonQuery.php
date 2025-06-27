@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Traits\ForwardsCalls;
 use KadirGun\JsonQuery\Exceptions\MethodCountExceededException;
 use KadirGun\JsonQuery\Exceptions\MethodDepthExceededException;
@@ -113,9 +114,18 @@ class JsonQuery implements ArrayAccess
 
         $parameters = $this->parseParameters($method['parameters'] ?? []);
 
+        if (Gate::has('json-query-method')) {
+            Gate::authorize('json-query-method', [$method, $subject]);
+        }
+
         return $subject->{$name}(...$parameters);
     }
 
+    /**
+     * Build the query based on the provided request data.
+     *
+     * @return Builder|Relation|Model|mixed
+     */
     public function build(): mixed
     {
         if (! $this->request instanceof JsonQueryData) {
