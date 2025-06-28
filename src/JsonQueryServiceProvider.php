@@ -3,7 +3,6 @@
 namespace KadirGun\JsonQuery;
 
 use Illuminate\Support\Facades\Route;
-use KadirGun\JsonQuery\Commands\JsonQueryCommand;
 use KadirGun\JsonQuery\Http\Controllers\JsonQueryController;
 use Spatie\LaravelPackageTools\Package;
 use Spatie\LaravelPackageTools\PackageServiceProvider;
@@ -19,8 +18,7 @@ class JsonQueryServiceProvider extends PackageServiceProvider
          */
         $package
             ->name('json-query')
-            ->hasConfigFile()
-            ->hasCommand(JsonQueryCommand::class);
+            ->hasConfigFile();
     }
 
     public function registerRoutes(): void
