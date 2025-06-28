@@ -44,10 +44,33 @@ test('model is not registered', function () {
         route('json-query.query', [
             'model' => 'xxxxxx',
         ]),
-        []
+        [
+            'methods' => [
+                [
+                    'name' => 'where',
+                    'parameters' => ['id', 1],
+                ],
+                [
+                    'name' => 'first',
+                ],
+            ],
+        ]
     );
 
     $response->assertNotFound();
+});
+
+test('unprocessable request', function () {
+    config(['json-query.route.models.users' => User::class]);
+
+    $response = postJson(
+        route('json-query.query', [
+            'model' => 'users',
+        ]),
+        []
+    );
+
+    $response->assertUnprocessable();
 });
 
 test('authorize json-query', function () {
@@ -81,4 +104,35 @@ test('authorize json-query', function () {
         );
 
     $response->assertForbidden();
+});
+
+test('get builder result', function () {
+    config(['json-query.route.models.users' => User::class]);
+
+    $user = User::factory()->create();
+
+    $response = postJson(
+        route('json-query.query', [
+            'model' => 'users',
+        ]),
+        [
+            'methods' => [
+                [
+                    'name' => 'where',
+                    'parameters' => ['id', $user->id],
+                ],
+            ],
+        ]
+    );
+
+    $response->assertOk();
+
+    $response->assertJson([
+        'data' => [
+            [
+                'id' => $user->id,
+                'name' => $user->name,
+            ],
+        ],
+    ]);
 });
