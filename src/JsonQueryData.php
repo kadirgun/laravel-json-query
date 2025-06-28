@@ -3,8 +3,9 @@
 namespace KadirGun\JsonQuery;
 
 use Illuminate\Http\Request;
+use Illuminate\Foundation\Http\FormRequest;
 
-class JsonQueryData extends Request
+class JsonQueryData extends FormRequest
 {
     public function methods(): array
     {
