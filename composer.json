@@ -6,7 +6,7 @@
         "laravel",
         "laravel-json-query"
     ],
-    "version": "0.0.1",
+    "version": "0.0.2",
     "homepage": "https://github.com/kadirgun/laravel-json-query",
     "license": "MIT",
     "authors": [
