@@ -70,7 +70,7 @@ test('unprocessable request', function () {
         []
     );
 
-    $response->assertUnprocessable();
+    $response->assertOk();
 });
 
 test('authorize json-query', function () {

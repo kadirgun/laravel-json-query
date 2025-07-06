@@ -15,7 +15,7 @@ class JsonQueryData extends FormRequest
     public function rules(): array
     {
         return [
-            'methods' => 'required|array',
+            'methods' => 'nullable|array',
             'methods.*.name' => 'required|string',
             'methods.*.parameters' => 'nullable|array',
         ];
