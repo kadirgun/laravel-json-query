@@ -129,6 +129,6 @@ test('get builder result', function () {
         [
             'id' => $user->id,
             'name' => $user->name,
-        ]
+        ],
     ]);
 });
