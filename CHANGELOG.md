@@ -2,6 +2,10 @@
 
 All notable changes to `laravel-json-query` will be documented in this file.
 
+## 0.0.3 - 2025-07-06
+
+**Full Changelog**: https://github.com/kadirgun/laravel-json-query/compare/0.0.2...0.0.3
+
 ## 0.0.2 - 2025-06-28
 
 ### What's Changed
