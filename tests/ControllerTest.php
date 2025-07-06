@@ -32,10 +32,8 @@ test('model is registered', function () {
     $response->assertOk();
 
     $response->assertJson([
-        'data' => [
-            'id' => $user->id,
-            'name' => $user->name,
-        ],
+        'id' => $user->id,
+        'name' => $user->name,
     ]);
 });
 
@@ -128,11 +126,9 @@ test('get builder result', function () {
     $response->assertOk();
 
     $response->assertJson([
-        'data' => [
-            [
-                'id' => $user->id,
-                'name' => $user->name,
-            ],
-        ],
+        [
+            'id' => $user->id,
+            'name' => $user->name,
+        ]
     ]);
 });
